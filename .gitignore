@@ -1,0 +1,13 @@
+# Rust build output (can be hundreds of MB, never upload it)
+/target
+
+# Local database with test data
+attendance.db
+attendance.db-shm
+attendance.db-wal
+
+# Editor and system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
