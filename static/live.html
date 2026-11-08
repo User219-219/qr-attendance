@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live attendance</title>
+<link rel="stylesheet" href="/app.css">
+<style>
+  .grid{display:grid;gap:16px;grid-template-columns:1fr}
+  @media (min-width:800px){.grid{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:start}}
+  .qrbox{text-align:center}
+  .qr{display:block;margin:0 auto;width:min(100%,62vh);aspect-ratio:1;background:#fff;padding:10px;border-radius:8px}
+  .bar{height:8px;border-radius:4px;background:var(--line);margin:14px auto 0;max-width:min(100%,62vh);overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:var(--accent)}
+  .big{font-size:2.6rem;font-weight:700;line-height:1}
+  ul{list-style:none;margin:0;padding:0;max-height:55vh;overflow:auto}
+  li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+  li:last-child{border-bottom:0}
+</style>
+</head>
+<body>
+<main class="wide">
+  <h1 id="title">Live attendance</h1>
+  <p class="sub" id="status">Connecting…</p>
+  <div class="grid">
+    <section class="panel qrbox" aria-label="QR code">
+      <img id="qr" class="qr" alt="QR code for attendance" hidden>
+      <div class="bar" id="barwrap" hidden><i id="bar"></i></div>
+      <p class="note" id="hint">Students scan this code from their course page. It changes after every scan.</p>
+    </section>
+    <section class="panel" aria-label="Students present">
+      <div class="row" style="justify-content:space-between">
+        <div><div class="big" id="count">0</div><div class="note">present</div></div>
+        <div class="row">
+          <a class="btn ghost" id="csv" href="#">Export CSV</a>
+          <button class="danger" id="close">Close attendance</button>
+        </div>
+      </div>
+      <ul id="list" aria-live="polite"></ul>
+    </section>
+  </div>
+</main>
+<script>
+const id = location.pathname.split('/').pop();
+const $ = s => document.querySelector(s);
+let offset = 0, expires = 0, ttl = 15, finished = false, list = [];
+$('#csv').href = '/api/activities/' + id + '/attendance.csv';
+
+const fmt = t => new Date(t * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+function render() {
+  $('#count').textContent = list.length;
+  $('#list').replaceChildren(...list.slice().reverse().map(r => {
+    const li = document.createElement('li');
+    const a = document.createElement('span'); a.textContent = r.name;
+    const b = document.createElement('span'); b.className = 'note'; b.textContent = r.student_id + ' at ' + fmt(r.marked_at);
+    li.append(a, b);
+    return li;
+  }));
+}
+
+function showQr(visible) {
+  $('#qr').hidden = !visible; $('#barwrap').hidden = !visible;
+  $('#hint').hidden = !visible;
+}
+
+function finish(text) {
+  finished = true; expires = 0; showQr(false);
+  $('#status').textContent = text;
+  $('#close').disabled = true;
+}
+
+function connect() {
+  const ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws/' + id);
+  ws.onmessage = ev => {
+    const m = JSON.parse(ev.data);
+    if (m.type === 'init') {
+      $('#title').textContent = m.title;
+      list = m.attendance; render();
+      if (m.state === 'scheduled') { showQr(false); $('#status').textContent = 'Not open yet. The QR appears when attendance opens.'; }
+      else if (m.state === 'closed') finish('Attendance is closed.');
+      else $('#status').textContent = 'Open. Waiting for the first scan.';
+    } else if (m.type === 'qr') {
+      offset = m.now - Date.now() / 1000; expires = m.expires_at; ttl = m.ttl;
+      $('#qr').src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(m.svg);
+      showQr(true); $('#status').textContent = 'Open. Show this code to the class.';
+    } else if (m.type === 'marked') {
+      list.push(m); render();
+    } else if (m.type === 'closed') {
+      finish('Attendance is closed.');
+    }
+  };
+  ws.onclose = () => { if (!finished) { $('#status').textContent = 'Connection lost. Reconnecting…'; setTimeout(connect, 2000); } };
+}
+connect();
+
+setInterval(() => {
+  if (!expires) return;
+  const left = Math.max(0, expires - (Date.now() / 1000 + offset));
+  $('#bar').style.width = (left / ttl * 100) + '%';
+}, 100);
+
+$('#close').addEventListener('click', async () => {
+  if (!confirm('Close attendance now? Students will no longer be able to scan.')) return;
+  await fetch('/api/activities/' + id + '/close', { method: 'POST' });
+});
+</script>
+</body>
+</html>

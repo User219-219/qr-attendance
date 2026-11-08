@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>New attendance activity</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<main>
+  <h1>New attendance activity</h1>
+  <p class="sub">Students can mark attendance only between the open and close times.</p>
+  <form class="panel" id="f">
+    <label for="course">Course</label>
+    <input id="course" required placeholder="e.g. BCU 111">
+    <label for="title">Title</label>
+    <input id="title" required placeholder="e.g. Week 5 lecture">
+    <label for="open">Opens</label>
+    <input id="open" type="datetime-local" required>
+    <label for="close">Closes</label>
+    <input id="close" type="datetime-local" required>
+    <p><button type="submit" id="go">Create and open live screen</button></p>
+    <div id="msg" class="msg bad" role="alert" hidden></div>
+  </form>
+</main>
+<script>
+const local = d => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+const now = new Date();
+document.getElementById('open').value = local(now);
+document.getElementById('close').value = local(new Date(now.getTime() + 60 * 60000));
+
+document.getElementById('f').addEventListener('submit', async e => {
+  e.preventDefault();
+  const msg = document.getElementById('msg'), go = document.getElementById('go');
+  msg.hidden = true; go.disabled = true;
+  try {
+    const r = await fetch('/api/activities', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        course_id: document.getElementById('course').value,
+        title: document.getElementById('title').value,
+        open_at: Math.floor(new Date(document.getElementById('open').value).getTime() / 1000),
+        close_at: Math.floor(new Date(document.getElementById('close').value).getTime() / 1000),
+      }),
+    });
+    const j = await r.json();
+    if (j.ok) { location.href = '/lecturer/' + j.id; return; }
+    msg.textContent = j.message; msg.hidden = false;
+  } catch { msg.textContent = 'Could not reach the server.'; msg.hidden = false; }
+  go.disabled = false;
+});
+</script>
+</body>
+</html>

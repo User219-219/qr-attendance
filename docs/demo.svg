@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" role="img" aria-labelledby="t d">
+<title id="t">QR Attendance demo</title>
+<desc id="d">The lecturer's screen shows a QR code and a countdown bar. A student scans it with a phone, a green confirmation appears, the student's name is added to the live list and the QR changes.</desc>
+<style>
+text{font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+.h{font-size:16px;font-weight:600;fill:#e6edf3}
+.m{font-size:13px;fill:#8b949e}
+.n{font-size:15px;fill:#e6edf3}
+.qa{animation:qa 6s step-end infinite}
+@keyframes qa{0%{opacity:1}25%{opacity:0}100%{opacity:0}}
+.qb{opacity:0;animation:qb 6s step-end infinite}
+@keyframes qb{0%{opacity:0}25%{opacity:1}75%{opacity:0}100%{opacity:0}}
+.qc{opacity:0;animation:qc 6s step-end infinite}
+@keyframes qc{0%{opacity:0}75%{opacity:1}100%{opacity:1}}
+.bar{transform-box:fill-box;transform-origin:left center;animation:bar 3s linear infinite;animation-delay:-1.5s}
+@keyframes bar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+.i1{animation:i1 6s ease infinite}
+@keyframes i1{0%,24%{opacity:0}25%,100%{opacity:1}}
+.i2{animation:i2 6s ease infinite}
+@keyframes i2{0%,74%{opacity:0}75%,100%{opacity:1}}
+.toast{animation:ts 6s ease infinite}
+@keyframes ts{0%,24%{opacity:0}25%,46%{opacity:1}47%,74%{opacity:0}75%,96%{opacity:1}97%,100%{opacity:0}}
+.scan{animation:sc 1.5s ease-in-out infinite alternate}
+@keyframes sc{from{transform:translateY(0)}to{transform:translateY(120px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}.qb,.qc{opacity:0}}
+</style>
+<rect x=".5" y=".5" width="899" height="419" rx="16" fill="#0d1117" stroke="#30363d"/>
+
+<rect x="24" y="24" width="560" height="372" rx="12" fill="#161b22" stroke="#30363d"/>
+<text class="h" x="44" y="54">Lecturer screen</text>
+<text class="m" x="44" y="74">Week 5 lecture, BCU 111</text>
+<rect x="494" y="38" width="70" height="26" rx="13" fill="#0e4429"/>
+<circle cx="510" cy="51" r="4" fill="#3fb950"/>
+<text x="520" y="56" style="font-size:13px;fill:#3fb950">open</text>
+
+<rect x="44" y="92" width="250" height="250" rx="10" fill="#ffffff"/>
+<g transform="translate(64 112)" fill="#0d1117" fill-rule="evenodd">
+<path class="qa" d="M80 0h10v10h-10zM110 0h10v10h-10zM90 10h10v10h-10zM80 20h10v10h-10zM90 20h10v10h-10zM100 20h10v10h-10zM80 30h10v10h-10zM80 40h10v10h-10zM90 40h10v10h-10zM110 40h10v10h-10zM120 40h10v10h-10zM80 50h10v10h-10zM90 50h10v10h-10zM100 50h10v10h-10zM110 50h10v10h-10zM100 60h10v10h-10zM120 60h10v10h-10zM80 70h10v10h-10zM0 80h10v10h-10zM10 80h10v10h-10zM20 80h10v10h-10zM30 80h10v10h-10zM50 80h10v10h-10zM70 80h10v10h-10zM100 80h10v10h-10zM110 80h10v10h-10zM130 80h10v10h-10zM150 80h10v10h-10zM160 80h10v10h-10zM190 80h10v10h-10zM200 80h10v10h-10zM0 90h10v10h-10zM30 90h10v10h-10zM40 90h10v10h-10zM50 90h10v10h-10zM60 90h10v10h-10zM80 90h10v10h-10zM100 90h10v10h-10zM110 90h10v10h-10zM130 90h10v10h-10zM150 90h10v10h-10zM160 90h10v10h-10zM170 90h10v10h-10zM180 90h10v10h-10zM0 100h10v10h-10zM20 100h10v10h-10zM30 100h10v10h-10zM60 100h10v10h-10zM80 100h10v10h-10zM90 100h10v10h-10zM110 100h10v10h-10zM120 100h10v10h-10zM130 100h10v10h-10zM140 100h10v10h-10zM160 100h10v10h-10zM180 100h10v10h-10zM190 100h10v10h-10zM0 110h10v10h-10zM30 110h10v10h-10zM40 110h10v10h-10zM70 110h10v10h-10zM80 110h10v10h-10zM110 110h10v10h-10zM150 110h10v10h-10zM160 110h10v10h-10zM170 110h10v10h-10zM190 110h10v10h-10zM0 120h10v10h-10zM30 120h10v10h-10zM40 120h10v10h-10zM60 120h10v10h-10zM70 120h10v10h-10zM110 120h10v10h-10zM130 120h10v10h-10zM140 120h10v10h-10zM150 120h10v10h-10zM160 120h10v10h-10zM170 120h10v10h-10zM180 120h10v10h-10zM190 120h10v10h-10zM80 130h10v10h-10zM90 130h10v10h-10zM150 130h10v10h-10zM160 130h10v10h-10zM170 130h10v10h-10zM80 140h10v10h-10zM100 140h10v10h-10zM120 140h10v10h-10zM140 140h10v10h-10zM90 150h10v10h-10zM130 150h10v10h-10zM180 150h10v10h-10zM80 160h10v10h-10zM130 160h10v10h-10zM160 160h10v10h-10zM180 160h10v10h-10zM200 160h10v10h-10zM90 170h10v10h-10zM100 170h10v10h-10zM120 170h10v10h-10zM150 170h10v10h-10zM160 170h10v10h-10zM170 170h10v10h-10zM190 170h10v10h-10zM200 170h10v10h-10zM100 180h10v10h-10zM120 180h10v10h-10zM140 180h10v10h-10zM150 180h10v10h-10zM190 180h10v10h-10zM80 190h10v10h-10zM90 190h10v10h-10zM100 190h10v10h-10zM150 190h10v10h-10zM160 190h10v10h-10zM170 190h10v10h-10zM180 190h10v10h-10zM190 190h10v10h-10zM200 190h10v10h-10zM90 200h10v10h-10zM100 200h10v10h-10zM130 200h10v10h-10zM140 200h10v10h-10zM150 200h10v10h-10zM170 200h10v10h-10zM200 200h10v10h-10zM0 0h70v70h-70zM10 10v50h50v-50zM20 20h30v30h-30zM140 0h70v70h-70zM150 10v50h50v-50zM160 20h30v30h-30zM0 140h70v70h-70zM10 150v50h50v-50zM20 160h30v30h-30z"/><path class="qb" d="M110 0h10v10h-10zM80 10h10v10h-10zM100 10h10v10h-10zM110 10h10v10h-10zM120 10h10v10h-10zM80 20h10v10h-10zM90 20h10v10h-10zM100 20h10v10h-10zM110 20h10v10h-10zM80 30h10v10h-10zM110 30h10v10h-10zM120 30h10v10h-10zM80 50h10v10h-10zM100 50h10v10h-10zM80 60h10v10h-10zM90 60h10v10h-10zM100 60h10v10h-10zM80 70h10v10h-10zM100 70h10v10h-10zM110 70h10v10h-10zM120 70h10v10h-10zM10 80h10v10h-10zM20 80h10v10h-10zM30 80h10v10h-10zM40 80h10v10h-10zM50 80h10v10h-10zM80 80h10v10h-10zM90 80h10v10h-10zM100 80h10v10h-10zM110 80h10v10h-10zM140 80h10v10h-10zM150 80h10v10h-10zM190 80h10v10h-10zM30 90h10v10h-10zM50 90h10v10h-10zM60 90h10v10h-10zM70 90h10v10h-10zM160 90h10v10h-10zM180 90h10v10h-10zM190 90h10v10h-10zM200 90h10v10h-10zM0 100h10v10h-10zM10 100h10v10h-10zM40 100h10v10h-10zM50 100h10v10h-10zM70 100h10v10h-10zM100 100h10v10h-10zM110 100h10v10h-10zM130 100h10v10h-10zM140 100h10v10h-10zM190 100h10v10h-10zM20 110h10v10h-10zM30 110h10v10h-10zM40 110h10v10h-10zM90 110h10v10h-10zM110 110h10v10h-10zM140 110h10v10h-10zM160 110h10v10h-10zM190 110h10v10h-10zM0 120h10v10h-10zM10 120h10v10h-10zM30 120h10v10h-10zM40 120h10v10h-10zM60 120h10v10h-10zM80 120h10v10h-10zM100 120h10v10h-10zM110 120h10v10h-10zM120 120h10v10h-10zM130 120h10v10h-10zM150 120h10v10h-10zM200 120h10v10h-10zM90 130h10v10h-10zM120 130h10v10h-10zM160 130h10v10h-10zM170 130h10v10h-10zM180 130h10v10h-10zM190 130h10v10h-10zM80 140h10v10h-10zM90 140h10v10h-10zM100 140h10v10h-10zM120 140h10v10h-10zM140 140h10v10h-10zM150 140h10v10h-10zM160 140h10v10h-10zM170 140h10v10h-10zM180 140h10v10h-10zM80 150h10v10h-10zM90 150h10v10h-10zM100 150h10v10h-10zM120 150h10v10h-10zM140 150h10v10h-10zM160 150h10v10h-10zM190 150h10v10h-10zM80 160h10v10h-10zM90 160h10v10h-10zM100 160h10v10h-10zM120 160h10v10h-10zM140 160h10v10h-10zM160 160h10v10h-10zM170 160h10v10h-10zM200 160h10v10h-10zM100 170h10v10h-10zM110 170h10v10h-10zM130 170h10v10h-10zM150 170h10v10h-10zM90 180h10v10h-10zM100 180h10v10h-10zM110 180h10v10h-10zM130 180h10v10h-10zM140 180h10v10h-10zM150 180h10v10h-10zM190 180h10v10h-10zM200 180h10v10h-10zM110 190h10v10h-10zM150 190h10v10h-10zM160 190h10v10h-10zM190 190h10v10h-10zM200 190h10v10h-10zM110 200h10v10h-10zM120 200h10v10h-10zM130 200h10v10h-10zM140 200h10v10h-10zM150 200h10v10h-10zM180 200h10v10h-10zM190 200h10v10h-10zM200 200h10v10h-10zM0 0h70v70h-70zM10 10v50h50v-50zM20 20h30v30h-30zM140 0h70v70h-70zM150 10v50h50v-50zM160 20h30v30h-30zM0 140h70v70h-70zM10 150v50h50v-50zM20 160h30v30h-30z"/><path class="qc" d="M90 0h10v10h-10zM100 10h10v10h-10zM120 10h10v10h-10zM100 20h10v10h-10zM110 20h10v10h-10zM80 30h10v10h-10zM120 30h10v10h-10zM80 40h10v10h-10zM90 40h10v10h-10zM100 40h10v10h-10zM110 50h10v10h-10zM80 60h10v10h-10zM90 60h10v10h-10zM100 60h10v10h-10zM80 70h10v10h-10zM100 70h10v10h-10zM110 70h10v10h-10zM120 70h10v10h-10zM30 80h10v10h-10zM90 80h10v10h-10zM110 80h10v10h-10zM120 80h10v10h-10zM140 80h10v10h-10zM150 80h10v10h-10zM170 80h10v10h-10zM190 80h10v10h-10zM0 90h10v10h-10zM10 90h10v10h-10zM30 90h10v10h-10zM40 90h10v10h-10zM60 90h10v10h-10zM80 90h10v10h-10zM110 90h10v10h-10zM120 90h10v10h-10zM140 90h10v10h-10zM170 90h10v10h-10zM180 90h10v10h-10zM200 90h10v10h-10zM10 100h10v10h-10zM20 100h10v10h-10zM30 100h10v10h-10zM50 100h10v10h-10zM100 100h10v10h-10zM130 100h10v10h-10zM160 100h10v10h-10zM180 100h10v10h-10zM190 100h10v10h-10zM200 100h10v10h-10zM10 110h10v10h-10zM30 110h10v10h-10zM40 110h10v10h-10zM120 110h10v10h-10zM130 110h10v10h-10zM140 110h10v10h-10zM190 110h10v10h-10zM0 120h10v10h-10zM10 120h10v10h-10zM20 120h10v10h-10zM60 120h10v10h-10zM80 120h10v10h-10zM120 120h10v10h-10zM130 120h10v10h-10zM140 120h10v10h-10zM150 120h10v10h-10zM180 120h10v10h-10zM190 120h10v10h-10zM200 120h10v10h-10zM90 130h10v10h-10zM100 130h10v10h-10zM120 130h10v10h-10zM150 130h10v10h-10zM180 130h10v10h-10zM190 130h10v10h-10zM80 140h10v10h-10zM140 140h10v10h-10zM180 140h10v10h-10zM190 140h10v10h-10zM200 140h10v10h-10zM80 150h10v10h-10zM90 150h10v10h-10zM130 150h10v10h-10zM140 150h10v10h-10zM150 150h10v10h-10zM160 150h10v10h-10zM170 150h10v10h-10zM90 160h10v10h-10zM110 160h10v10h-10zM130 160h10v10h-10zM140 160h10v10h-10zM170 160h10v10h-10zM180 160h10v10h-10zM190 160h10v10h-10zM80 170h10v10h-10zM140 170h10v10h-10zM170 170h10v10h-10zM180 170h10v10h-10zM100 180h10v10h-10zM110 180h10v10h-10zM120 180h10v10h-10zM140 180h10v10h-10zM150 180h10v10h-10zM170 180h10v10h-10zM180 180h10v10h-10zM190 180h10v10h-10zM90 190h10v10h-10zM100 190h10v10h-10zM120 190h10v10h-10zM130 190h10v10h-10zM140 190h10v10h-10zM190 190h10v10h-10zM200 190h10v10h-10zM90 200h10v10h-10zM100 200h10v10h-10zM120 200h10v10h-10zM130 200h10v10h-10zM160 200h10v10h-10zM180 200h10v10h-10zM190 200h10v10h-10zM200 200h10v10h-10zM0 0h70v70h-70zM10 10v50h50v-50zM20 20h30v30h-30zM140 0h70v70h-70zM150 10v50h50v-50zM160 20h30v30h-30zM0 140h70v70h-70zM10 150v50h50v-50zM20 160h30v30h-30z"/>
+</g>
+<rect x="44" y="356" width="250" height="8" rx="4" fill="#30363d"/>
+<rect class="bar" x="44" y="356" width="250" height="8" rx="4" fill="#3fb950"/>
+<text class="m" x="44" y="382">Each code works once and lasts 15 seconds</text>
+
+<text class="h" x="330" y="112">Present</text>
+<line x1="330" y1="124" x2="560" y2="124" stroke="#30363d"/>
+<g class="i1"><circle cx="344" cy="152" r="12" fill="#58a6ff"/><text class="n" x="366" y="157">Amina W.</text><text class="m" x="520" y="157" text-anchor="end">S001</text></g>
+<g class="i2"><circle cx="344" cy="190" r="12" fill="#f78166"/><text class="n" x="366" y="195">Brian K.</text><text class="m" x="520" y="195" text-anchor="end">S002</text></g>
+<text class="m" x="330" y="380">Names appear the moment they scan</text>
+
+<rect x="640" y="30" width="200" height="360" rx="28" fill="#161b22" stroke="#484f58" stroke-width="2"/>
+<rect x="652" y="60" width="176" height="304" rx="14" fill="#0d1117"/>
+<text class="h" x="740" y="86" text-anchor="middle" style="font-size:14px">Mark attendance</text>
+<rect x="664" y="100" width="152" height="152" rx="10" fill="#010409"/>
+<g fill="none" stroke="#e6edf3" stroke-width="3" stroke-linecap="round">
+<path d="M680 130v-14h14"/><path d="M786 116h14v14"/><path d="M680 222v14h14"/><path d="M786 236h14v-14"/>
+</g>
+<rect class="scan" x="684" y="124" width="112" height="3" fill="#3fb950"/>
+<text class="m" x="740" y="276" text-anchor="middle">Point the camera at the screen</text>
+<g class="toast"><rect x="664" y="300" width="152" height="40" rx="10" fill="#0e4429" stroke="#3fb950"/>
+<text x="740" y="325" text-anchor="middle" style="font-size:14px;fill:#3fb950;font-weight:600">Attendance recorded</text></g>
+<text class="m" x="740" y="408" text-anchor="middle" style="font-size:12px">student's phone</text>
+</svg>

@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mark attendance</title>
+<link rel="stylesheet" href="/app.css">
+<style>
+  .cam{position:relative;border-radius:var(--r);overflow:hidden;background:#000;aspect-ratio:1;display:none}
+  .cam video{width:100%;height:100%;object-fit:cover;display:block}
+  .cam::after{content:"";position:absolute;inset:18%;border:3px solid rgba(255,255,255,.85);border-radius:12px;pointer-events:none}
+</style>
+</head>
+<body>
+<main>
+  <h1 id="title">Mark attendance</h1>
+  <p class="sub" id="sub">Scan the QR code on the lecturer's screen.</p>
+  <div class="panel">
+    <div class="cam" id="cam"><video id="video" playsinline muted autoplay></video></div>
+    <canvas id="canvas" hidden></canvas>
+    <p class="note" id="status" aria-live="polite" hidden></p>
+    <p><button id="start">Open camera</button></p>
+    <div id="msg" class="msg" role="status" aria-live="polite" hidden></div>
+  </div>
+</main>
+<!-- Swap for a copy hosted on your own server before production. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const path = location.pathname;
+const pathToken = path.startsWith('/a/') ? path.slice(3) : null;
+const activityId = path.startsWith('/scan/') ? path.split('/')[2] : null;
+
+let stream = null, scanning = false, lastToken = null, lastUnknown = null, detector = null, decoder = '';
+
+function say(text, kind) {
+  const m = $('#msg'); m.textContent = text; m.className = 'msg ' + (kind || ''); m.hidden = false;
+}
+function status(text) {
+  const s = $('#status'); s.textContent = text; s.hidden = !text;
+}
+
+// Returns true when scanning should stop (recorded, or a final problem).
+async function submit(token) {
+  say('Recording your attendance...');
+  try {
+    const r = await fetch('/api/attend', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token }),
+    });
+    const j = await r.json();
+    if (r.ok) { say(j.message, 'ok'); return true; }
+    say(j.message, 'bad');
+    return !(r.status === 410 || r.status === 400); // expired or invalid: keep scanning for the new code
+  } catch {
+    lastToken = null; // network problem: allow the same code to be retried
+    say('Could not reach the server. Check your connection.', 'bad');
+    return false;
+  }
+}
+
+// The address inside the QR may use a different host than the one this page was opened on
+// (for example BASE_URL not set on the server), so only the /a/<code> part matters.
+function extractToken(text) {
+  const m = String(text).match(/\/a\/([A-Za-z0-9_-]{22})(?:[\/?#]|$)/);
+  return m ? m[1] : null;
+}
+
+async function pickDecoder() {
+  detector = null; decoder = '';
+  if ('BarcodeDetector' in window) {
+    try {
+      const formats = await BarcodeDetector.getSupportedFormats();
+      if (formats.includes('qr_code')) { detector = new BarcodeDetector({ formats: ['qr_code'] }); decoder = 'built-in'; return; }
+    } catch {}
+  }
+  if (window.jsQR) decoder = 'jsQR';
+}
+
+async function readFrame() {
+  const v = $('#video');
+  if (v.readyState < 2 || !v.videoWidth) return null;
+  if (detector) {
+    try {
+      const codes = await detector.detect(v);
+      return codes.length ? codes[0].rawValue : null;
+    } catch {
+      detector = null; decoder = window.jsQR ? 'jsQR' : '';   // built-in decoder failed: fall back
+    }
+  }
+  if (window.jsQR) {
+    const scale = Math.min(1, 640 / v.videoWidth);              // small frames decode fast on phones
+    const w = Math.round(v.videoWidth * scale), h = Math.round(v.videoHeight * scale);
+    const c = $('#canvas');
+    if (c.width !== w) { c.width = w; c.height = h; }
+    const ctx = c.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(v, 0, 0, w, h);
+    const img = ctx.getImageData(0, 0, w, h);
+    const r = jsQR(img.data, w, h, { inversionAttempts: 'dontInvert' });
+    return r ? r.data : null;
+  }
+  return null;
+}
+
+async function tick() {
+  if (!scanning) return;
+  let text = null;
+  try { text = await readFrame(); } catch {}
+  if (text) {
+    const t = extractToken(text);
+    if (!t) {
+      if (text !== lastUnknown) { lastUnknown = text; status('Found a QR code, but it is not an attendance code. Scan the one on the lecturer\'s screen.'); }
+    } else if (t !== lastToken) {
+      lastToken = t; scanning = false;
+      if (await submit(t)) { stopCamera(); return; }
+      scanning = true;
+    }
+  }
+  setTimeout(tick, 150);
+}
+
+function stopCamera() {
+  scanning = false;
+  if (stream) stream.getTracks().forEach(t => t.stop());
+  stream = null;
+  $('#cam').style.display = 'none'; status('');
+  $('#start').hidden = false; $('#start').textContent = 'Scan again';
+}
+
+async function getStream() {
+  try {
+    return await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false,
+    });
+  } catch (e) {
+    if (e.name === 'OverconstrainedError' || e.name === 'ConstraintNotSatisfiedError') {
+      return await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    }
+    throw e;
+  }
+}
+
+async function startCamera() {
+  if (!navigator.mediaDevices || !window.isSecureContext) {
+    say('The camera needs a secure (HTTPS) connection. Open the site from its https address.', 'bad'); return;
+  }
+  await pickDecoder();
+  if (!decoder) {
+    say('The QR scanner could not load (blocked or offline). Use the phone\'s own camera app to scan the code instead.', 'bad'); return;
+  }
+  try {
+    stream = await getStream();
+  } catch (e) {
+    const why = {
+      NotAllowedError: 'Camera access was blocked. Allow the camera for this site in your browser settings. If you opened this link inside WhatsApp, Instagram or another app, open it in Chrome or Safari instead.',
+      NotFoundError: 'No camera was found on this device.',
+      NotReadableError: 'The camera is busy. Close other apps that use it, then try again.',
+      SecurityError: 'The browser blocked the camera on this page. Use the https address.',
+    }[e.name] || ('Could not start the camera (' + e.name + ').');
+    say(why, 'bad'); return;
+  }
+  // Show the video BEFORE playing it: phones may not decode frames of a hidden video.
+  $('#cam').style.display = 'block'; $('#start').hidden = true; $('#msg').hidden = true;
+  const v = $('#video');
+  v.muted = true; v.setAttribute('playsinline', ''); v.srcObject = stream;
+  try { await v.play(); } catch (e) { say('Could not start the camera preview (' + e.name + ').', 'bad'); stopCamera(); return; }
+  status('Camera on. Point it at the QR code on the lecturer\'s screen. (scanner: ' + decoder + ')');
+  lastToken = null; lastUnknown = null; scanning = true; tick();
+}
+
+$('#start').addEventListener('click', startCamera);
+
+(async () => {
+  if (pathToken) {                       // opened from the phone's own camera app
+    $('#start').hidden = true;
+    const done = await submit(pathToken);
+    if (!done) { $('#start').hidden = false; }
+    return;
+  }
+  const r = await fetch('/api/activities/' + activityId + '/info');
+  const j = await r.json();
+  if (!r.ok) { say(j.message, 'bad'); $('#start').hidden = true; return; }
+  $('#title').textContent = j.title;
+  if (j.state === 'scheduled') say('Attendance has not opened yet.');
+  if (j.state === 'closed') { say('Attendance is closed.', 'bad'); $('#start').hidden = true; }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Attendance (dev launcher)</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<main>
+  <h1>Attendance dev launcher</h1>
+  <p class="sub">Stands in for the Moodle launch while we build. It only works when the server runs with MOCK_LTI=1.</p>
+
+  <form class="panel" method="get" action="/mock/launch">
+    <h2>Sign in as a lecturer</h2>
+    <input type="hidden" name="role" value="lecturer">
+    <label for="l-id">Staff ID</label>
+    <input id="l-id" name="id" value="L001" required>
+    <label for="l-name">Name</label>
+    <input id="l-name" name="name" value="Dr. Test Lecturer" required>
+    <p><button type="submit">Open lecturer page</button></p>
+  </form>
+
+  <form class="panel" method="get" action="/mock/launch">
+    <h2>Sign in as a student</h2>
+    <input type="hidden" name="role" value="student">
+    <label for="s-id">Reg number</label>
+    <input id="s-id" name="id" value="S001" required>
+    <label for="s-name">Name</label>
+    <input id="s-name" name="name" value="Test Student" required>
+    <label for="s-act">Activity number</label>
+    <input id="s-act" name="activity" type="number" min="1" value="1" required>
+    <p><button type="submit">Open scanner</button></p>
+    <p class="note">Use a different browser profile for each student, because one phone can only mark one student per activity.</p>
+  </form>
+</main>
+</body>
+</html>
